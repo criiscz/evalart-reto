@@ -56,7 +56,8 @@ public class ManageTables {
             table.setCancelled(true);
             return;
         }
-        clients.sort(Comparator.comparingDouble(Client::calculateTotalAccount));
+        clients.sort((o1, o2) -> o1.calculateTotalAccount() < o2.calculateTotalAccount() ? 1 : -1);
+        sortBySameBalance(clients);
         for (Client client : clients) {
             if (table.getClients().stream().noneMatch(_client -> _client.getCompany() == client.getCompany())) {
                 if (client.isEncrypt())
@@ -67,6 +68,20 @@ public class ManageTables {
         Table tba = reduceTable(table);
         table.setClients(tba.getClients());
 
+    }
+
+    private void sortBySameBalance(List<Client> clients) {
+        for (int i = 0; i < clients.size() - 1; i++) {
+            for (int j = 0; j < clients.size() - 1; j++) {
+                if (clients.get(j).calculateTotalAccount() == clients.get(j + 1).calculateTotalAccount()) {
+                    Client aux = clients.get(j);
+                    if (clients.get(j).getCode().compareTo(clients.get(j + 1).getCode()) > 0) {
+                        clients.set(j, clients.get(j + 1));
+                        clients.set(j + 1, aux);
+                    }
+                }
+            }
+        }
     }
 
     private Table reduceTable(Table table) {
@@ -81,14 +96,14 @@ public class ManageTables {
     }
 
     private Table selectMinorTable(Table table, long minor) {
-        if(minor < 2) return null;
+        if (minor < 2) return null;
 
         Table newTable = new Table(table.getName());
         List<Client> clients = table.getClients();
         long male = 0, female = 0;
-        for (int i = 0; i < (minor*2); i++) {
+        for (int i = 0; i < (minor * 2); i++) {
             newTable.addClient(clients.get(i));
-            if(clients.get(i).isMale()) male++;
+            if (clients.get(i).isMale()) male++;
             else female++;
         }
 
@@ -97,8 +112,6 @@ public class ManageTables {
             if (balanceGenreList(newTable, male, female, options, i)) break;
         }
         return newTable;
-
-
     }
 
     private boolean balanceGenreList(Table newTable, long male, long female, List<Client> options, int i) {
@@ -122,11 +135,11 @@ public class ManageTables {
 
         for (int i = 0; i < 8; i++) {
             newTable.addClient(clients.get(i));
-            if(clients.get(i).isMale()) male++;
+            if (clients.get(i).isMale()) male++;
             else female++;
         }
 
-        List<Client> options = table.getClients().subList(8, table.getClientsLength()-1);
+        List<Client> options = table.getClients().subList(8, table.getClientsLength() - 1);
         for (int i = 7; i >= 0; i--) {
             if (balanceGenreList(newTable, male, female, options, i)) break;
         }
@@ -136,7 +149,7 @@ public class ManageTables {
 
     private void swapClients(Table newTable, List<Client> options, int i, boolean isMale) {
         for (int j = options.size() - 1; j >= 0; j--) {
-            if(options.get(j).isMale() == isMale){
+            if (options.get(j).isMale() == isMale) {
                 newTable.getClients().set(i, options.get(j));
                 options.remove(options.get(j));
                 break;
@@ -144,19 +157,9 @@ public class ManageTables {
                 options.remove(options.get(j));
             }
         }
-//        for (Client client : options){
-//            if(client.isMale() == isMale){
-//                newTable.getClients().set(i, client);
-//                options.remove(client);
-//                break;
-//            }else {
-//                options.remove(client);
-//            }
-//        }
     }
 
-
-    private boolean checkTableBalanced(Table table){
+    private boolean checkTableBalanced(Table table) {
         long male = table.getClients().stream().filter(Client::isMale).count();
         long female = table.getClientsLength() - male;
         return male == female;
@@ -165,7 +168,7 @@ public class ManageTables {
     private void createTables() throws IOException, URISyntaxException {
         String data = FileUtils.readFile(INPUT_DATA);
         String[] dataArray = data.replaceFirst("<", "").split("<");
-        int tableNumber = dataArray.length - 1;
+        int tableNumber = dataArray.length;
         for (int i = 0; i < tableNumber; i++) {
             createTable(dataArray[i]);
         }

@@ -35,7 +35,7 @@ public class FileUtils {
 
     public static void main(String[] args) {
         try {
-            System.out.println(Arrays.toString(FileUtils.readFile("input.txt").replaceFirst("<","").split("<")[1].replace(">","").split("\n")));
+            System.out.println(Arrays.toString(FileUtils.readFile("entrada.txt").replaceFirst("<","").split("<")[1].replace(">","").split("\n")));
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
