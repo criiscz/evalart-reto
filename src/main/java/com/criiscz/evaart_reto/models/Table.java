@@ -49,4 +49,8 @@ public class Table {
     public void addClient(Client client) {
         clients.add(client);
     }
+
+    public void setClients(List<Client> clients){
+        this.clients = clients;
+    }
 }

@@ -21,7 +21,6 @@ public class ClientDAO {
         sql += filtersString;
         Connection conn = ConnectionSQL.getConnection();
         Statement statement = conn.createStatement();
-        System.out.println(sql);
         ResultSet resultSet = statement.executeQuery(sql);
 
         while(resultSet.next()){

@@ -14,10 +14,12 @@ public class Console {
     private void printTables(List<Table> data) {
         for(Table table : data) {
             System.out.printf("<%s>\n" ,table.getName());
+            StringBuilder line = new StringBuilder();
             for(Client client : table.getClients()) {
-                System.out.print(client.getCode()+",");
+                line.append(client.getCode()).append(",");
             }
-            System.out.println("");
+            if(table.isCancelled()) System.out.println("CANCELADA");
+            else System.out.println(line.substring(0,line.length()-1));
         }
     }
 }

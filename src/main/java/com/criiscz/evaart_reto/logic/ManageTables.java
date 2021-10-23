@@ -65,7 +65,7 @@ public class ManageTables {
             }
         }
         Table tba = reduceTable(table);
-        table = tba;
+        table.setClients(tba.getClients());
 
     }
 
@@ -135,14 +135,13 @@ public class ManageTables {
     }
 
     private void swapClients(Table newTable, List<Client> options, int i, boolean isMale) {
-        for (int j = 0; j < options.size(); j++) {
+        for (int j = options.size() - 1; j >= 0; j--) {
             if(options.get(j).isMale() == isMale){
                 newTable.getClients().set(i, options.get(j));
                 options.remove(options.get(j));
                 break;
             } else {
                 options.remove(options.get(j));
-                j--;
             }
         }
 //        for (Client client : options){
